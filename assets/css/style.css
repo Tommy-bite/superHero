@@ -1,0 +1,6 @@
+
+img {
+    max-width: 100%;
+    height: auto;
+    /* Esto garantiza que la altura se ajuste proporcionalmente al ancho */
+}
