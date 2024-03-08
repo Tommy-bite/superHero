@@ -9,19 +9,19 @@ const getSuperHero = (idHero) => {
         method: "GET",
         dataType: "json",
         // Mostrar el spinner antes de enviar la petición
-        beforeSend: function() {
+        beforeSend: function () {
             $("#spinner").show();
         },
         // Ocultar el spinner después de recibir la respuesta
-        complete: function() {
+        complete: function () {
             $("#spinner").hide();
         },
-        success(hero){
+        success(hero) {
             const heroConvertido = convierteHero(hero);
             pintaInfoHero(heroConvertido);
             pintaGrafico(hero);
         },
-        error(err){
+        error(err) {
             console.error(err)
         }
     })
@@ -99,18 +99,44 @@ const pintaInfoHero = (hero) => {
 }
 
 const pintaGrafico = (hero) => {
-    
+    const powersArray = Object.entries(hero.powerstats);
+    const powers = powersArray.map(power => ({ ...power }))
+    const dataPoints = powers.map(objeto => {
+        var nuevoObjeto = {
+          y: objeto[1],
+          label: objeto[0]
+        };
+        return nuevoObjeto;
+    });
+    const options = {
+        title: {
+            text: "Habilidades de poder"
+        },
+        animationEnabled: true,
+        data: [{
+            type: "pie",
+            startAngle: 40,
+            toolTipContent: "<b>{label}</b>: {y}%",
+            showInLegend: "true",
+            legendText: "{label}",
+            indexLabelFontSize: 16,
+            indexLabel: "{label} - {y}%",
+            dataPoints: dataPoints
+        }]
+    }
+    $("#chartContainer").CanvasJSChart(options);
+
 }
 
-$(document).ready(function(){
-    formHero.on("submit", function(e){
+$(document).ready(function () {
+    formHero.on("submit", function (e) {
         e.preventDefault();
         const inputNameHeroUser = +inputNameHero.val();
         inputNameHero.removeClass("is-valid is-invalid");
-        if(inputNameHeroUser > 0 && inputNameHeroUser <= 731){
+        if (inputNameHeroUser > 0 && inputNameHeroUser <= 731) {
             inputNameHero.addClass("is-valid");
             getSuperHero(inputNameHeroUser);
-        }else{
+        } else {
             inputNameHero.addClass("is-invalid");
             geroResult.html("<h4 class='text-center text-danger fw-bold'>NO EXISTE REGISTRO DEL SUPERHERO BUSCADO... :C</h4>");
         }
